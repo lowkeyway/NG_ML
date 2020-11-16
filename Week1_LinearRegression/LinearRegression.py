@@ -7,6 +7,15 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+def inputSpaceEsc():
+    while True:
+        temp = input()
+        if temp == " ":
+            return 1
+
+        if temp == "s":
+            return 0
+
 def computeCost(X, y, theta):
     inner = np.power(((X * theta.T) - y), 2)
     return np.sum(inner) / (2 * len(X))
@@ -77,6 +86,9 @@ def main_func(argv):
     ax.set_title('Predict Profit vs. Population Size')
     f = g[0, 0] + (g[0, 1] * x)
     ax.plot(x, f, 'r', label='Prediction')
+
+    inputSpaceEsc()
+
     plt.show()
 
 
