@@ -7,19 +7,26 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def inputSpaceEsc():
-    while True:
-        temp = input()
-        if temp == " ":
-            return 1
-
-        if temp == "s":
-            return 0
+alpha = 0.01
+iters = 1000
+BLOCK = 10
 
 def computeCost(X, y, theta):
     inner = np.power(((X * theta.T) - y), 2)
     return np.sum(inner) / (2 * len(X))
 
+def pltShow(data, theta, index):
+    x = np.linspace(data.Population.min(), data.Population.max(), 100)
+    fig, ax = plt.subplots(figsize=(12, 8))
+    ax.scatter(data.Population, data.Profit, label='Traning Data')
+    ax.legend(loc=2)
+    ax.set_xlabel('Population')
+    ax.set_ylabel('Profit')
+    ax.set_title('Predict Profit vs. Population Size ( ' + str(index) + " )")
+    f = theta[0, 0] + (theta[0, 1] * x)
+    ax.plot(x, f, 'r', label='Prediction')
+
+    plt.show()
 
 def gradientDescent(data, X, y, theta, alpha, iters):
     temp = np.matrix(np.zeros(theta.shape))
@@ -28,6 +35,8 @@ def gradientDescent(data, X, y, theta, alpha, iters):
 
     for i in range(iters):
         error = (X * theta.T) - y
+        if(i % (iters / BLOCK) == 0):
+            pltShow(data, theta, i)
 
         for j in range(parameters):
             term = np.multiply(error, X[:, j])
@@ -70,27 +79,12 @@ def main_func(argv):
     cost = computeCost(X, y, theta)
     print("\n============cost============\n", cost)
 
-    alpha = 0.01
-    iters = 1000
-
     g, cost = gradientDescent(data, X, y, theta, alpha, iters)
     print("\n============theta============\n", g)
     print("\n============Final Cost============\n", cost[iters - 1])
 
-    x = np.linspace(data.Population.min(), data.Population.max(), 100)
-    fig, ax = plt.subplots(figsize = (12, 8))
-    ax.scatter(data.Population, data.Profit, label = 'Traning Data')
-    ax.legend(loc=2)
-    ax.set_xlabel('Population')
-    ax.set_ylabel('Profit')
-    ax.set_title('Predict Profit vs. Population Size')
-    f = g[0, 0] + (g[0, 1] * x)
-    ax.plot(x, f, 'r', label='Prediction')
 
-    inputSpaceEsc()
-
-    plt.show()
-
+    pltShow(data, g, iters)
 
 if __name__ == '__main__':
     main_func(sys.argv)
