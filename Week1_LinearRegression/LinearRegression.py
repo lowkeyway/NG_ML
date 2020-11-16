@@ -15,7 +15,8 @@ def computeCost(X, y, theta):
     inner = np.power(((X * theta.T) - y), 2)
     return np.sum(inner) / (2 * len(X))
 
-def pltShow(data, theta, index):
+def pltShowThetaLine(data, theta, index):
+    return
     x = np.linspace(data.Population.min(), data.Population.max(), 100)
     fig, ax = plt.subplots(figsize=(12, 8))
     ax.scatter(data.Population, data.Profit, label='Traning Data')
@@ -28,6 +29,20 @@ def pltShow(data, theta, index):
 
     plt.show()
 
+def pltShowCostLine(alpha, cost):
+    index = cost.shape[0]
+
+    x = np.arange(0, index, 1)
+    y = cost
+
+    plt.figure("Alpha = " + str(alpha))
+    plt.title("Alpha Cost Line")
+    plt.xlabel("Item")
+    plt.ylabel("Cost")
+    plt.plot(x, y)
+    plt.show()
+
+
 def gradientDescent(data, X, y, theta, alpha, iters):
     temp = np.matrix(np.zeros(theta.shape))
     parameters = int(theta.ravel().shape[1])
@@ -36,7 +51,7 @@ def gradientDescent(data, X, y, theta, alpha, iters):
     for i in range(iters):
         error = (X * theta.T) - y
         if(i % (iters / BLOCK) == 0):
-            pltShow(data, theta, i)
+            pltShowThetaLine(data, theta, i)
 
         for j in range(parameters):
             term = np.multiply(error, X[:, j])
@@ -84,7 +99,10 @@ def main_func(argv):
     print("\n============Final Cost============\n", cost[iters - 1])
 
 
-    pltShow(data, g, iters)
+    pltShowThetaLine(data, g, iters)
+
+    pltShowCostLine(alpha, cost)
+
 
 if __name__ == '__main__':
     main_func(sys.argv)
