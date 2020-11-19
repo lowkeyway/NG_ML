@@ -16,7 +16,6 @@ def computeCost(X, y, theta):
     return np.sum(inner) / (2 * len(X))
 
 def pltShowThetaLine(data, theta, index):
-    return
     x = np.linspace(data.Population.min(), data.Population.max(), 100)
     fig, ax = plt.subplots(figsize=(12, 8))
     ax.scatter(data.Population, data.Profit, label='Traning Data')
@@ -91,8 +90,8 @@ def main_func(argv):
     print("\n============y============\n", y)
     print("\n============theta============\n", theta)
 
-    cost = computeCost(X, y, theta)
-    print("\n============cost============\n", cost)
+    # cost = computeCost(X, y, theta)
+    # print("\n============cost============\n", cost)
 
     g, cost = gradientDescent(data, X, y, theta, alpha, iters)
     print("\n============theta============\n", g)
@@ -101,7 +100,7 @@ def main_func(argv):
 
     pltShowThetaLine(data, g, iters)
 
-    pltShowCostLine(alpha, cost)
+    # pltShowCostLine(alpha, cost)
 
 
 if __name__ == '__main__':

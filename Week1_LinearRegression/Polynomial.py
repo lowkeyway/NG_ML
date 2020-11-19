@@ -19,7 +19,7 @@ def main_func(argv):
     Y = y.reshape(-1, 1)
     print("X = \n", X)
 
-    poly = PolynomialFeatures(degree=2, include_bias=False)
+    poly = PolynomialFeatures(degree=2)
     X_poly = poly.fit_transform(X)
     print("X_poly = \n", X_poly)
 

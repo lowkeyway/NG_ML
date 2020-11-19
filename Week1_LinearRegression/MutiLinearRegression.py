@@ -56,6 +56,8 @@ def main_func(argv):
     theta, cost = gradientDescent(X, Y, theta, alpha, iters)
 
     cost = computeCost(X, Y, theta)
+
+    print("Theta = ", theta)
     print("Cost = ", cost)
 
 
