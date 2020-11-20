@@ -34,6 +34,19 @@ def gradientDescent(X, Y, thelta, alpha, iters):
 
     return thelta, cost
 
+def pltShowCostLine(alpha, cost):
+    index = cost.shape[0]
+
+    x = np.arange(0, index, 1)
+    y = cost
+
+    plt.figure("Alpha = " + str(alpha))
+    plt.title("Alpha Cost Line")
+    plt.xlabel("Item")
+    plt.ylabel("Cost")
+    plt.plot(x, y)
+    plt.show()
+
 def main_func(argv):
     data = pd.read_csv(file, header=None, names=["Size", "Bedrooms", "Price"])
     print("\n========== data.head ==========\n", data.head())
@@ -55,13 +68,11 @@ def main_func(argv):
 
     theta, cost = gradientDescent(X, Y, theta, alpha, iters)
 
-    cost = computeCost(X, Y, theta)
+    # cost = computeCost(X, Y, theta)
 
-    print("Theta = ", theta)
-    print("Cost = ", cost)
-
-
-
+    print("Theta = \n", theta)
+    print("Cost = \n", cost)
+    pltShowCostLine(alpha, cost)
 
 if __name__ == '__main__':
     main_func(sys.argv)

@@ -90,8 +90,8 @@ def main_func(argv):
     print("\n============y============\n", y)
     print("\n============theta============\n", theta)
 
-    # cost = computeCost(X, y, theta)
-    # print("\n============cost============\n", cost)
+    cost = computeCost(X, y, theta)
+    print("\n============cost============\n", cost)
 
     g, cost = gradientDescent(data, X, y, theta, alpha, iters)
     print("\n============theta============\n", g)
@@ -100,7 +100,7 @@ def main_func(argv):
 
     pltShowThetaLine(data, g, iters)
 
-    # pltShowCostLine(alpha, cost)
+    pltShowCostLine(alpha, cost)
 
 
 if __name__ == '__main__':
