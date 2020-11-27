@@ -39,19 +39,20 @@ def cost(data, centroids, C):
     return distances.sum()/m
 
 def kMeansIter(data, k, epoch=100, tol=0.0001):
-    # 1. 随机选择k个点作为Centre
+    # 1. 随机选择k个点作为Centroids
     centroids = randomInit(data, k)
     costProgress = []
 
     for i in range(epoch):
         print("running epoch {}".format(i))
-        # 2. 增加一列C，表示数据data中的每个像素相对于centroids的距离，进行归类打标签(0, 1, ... , k)
+        # 2. 增加一列C，根据数据data中的每个像素相对于centroids的距离，进行归类打标签成离自己最近的那个centroids的值(0, 1, ... , k)
         C = assignCluster(data, centroids)
-        # 3. 根据归类后的数据，重新计算新的centroids
+        # 3. 根据归类后的数据，重新计算每个类的mean值，定义为新的centroids
         centroids = newCentroids(data, C)
         # 4. 计算每个簇所有点到其中心点的平均距离记做cost
         costProgress.append(cost(data, centroids, C))
 
+        # 5. 终止触发，缩小的比例小于一定的值就认为已经足够优秀了
         if len(costProgress) > 1:
             if(np.abs(costProgress[-1] - costProgress[-2])) / costProgress[-1] < tol:
                 break
