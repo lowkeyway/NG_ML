@@ -28,6 +28,36 @@ def assignCluster(data, centroids):
                                axis=1,
                                arr=data.values)
 
+def cost(data, centroids, C):
+    m = data.shape[0]
+
+    expandCWithCentroids = centroids[C]
+    distances = np.apply_along_axis(func1d=np.linalg.norm,
+                                    axis=1,
+                                    arr=data.values - expandCWithCentroids)
+
+    return distances.sum()/m
+
+def kMeansIter(data, k, epoch=100, tol=0.0001):
+    # 1. 随机选择k个点作为Centre
+    centroids = randomInit(data, k)
+    costProgress = []
+
+    for i in range(epoch):
+        print("running epoch {}".format(i))
+        # 2. 增加一列C，表示数据data中的每个像素相对于centroids的距离，进行归类打标签(0, 1, ... , k)
+        C = assignCluster(data, centroids)
+        # 3. 根据归类后的数据，重新计算新的centroids
+        centroids = newCentroids(data, C)
+        # 4. 计算每个簇所有点到其中心点的平均距离记做cost
+        costProgress.append(cost(data, centroids, C))
+
+        if len(costProgress) > 1:
+            if(np.abs(costProgress[-1] - costProgress[-2])) / costProgress[-1] < tol:
+                break
+
+    return C, centroids, costProgress[-1]
+
 def newCentroids(data, C):
     dataWithC = combineDataC(data, C)
     # print("dataWithC = \n", dataWithC)
@@ -42,9 +72,9 @@ def main_func(argv):
     # sns.set(context="notebook", style="white")
     # sns.lmplot("X1", "X2", data=data, fit_reg=False)
     # plt.show()
-
-    initCentroids = randomInit(data, 3)
-    print(initCentroids)
+    #
+    # initCentroids = randomInit(data, 3)
+    # print(initCentroids)
 
     # X = np.array([1, 1])
     # fig, ax = plt.subplots(figsize=(6, 4))
@@ -54,20 +84,27 @@ def main_func(argv):
     #     ax.annotate("[{}: ({}, {})]" .format(i, node[0], node[1]), node)
     #
     # ax.scatter(X[0], X[1], marker='x', s=200)
-
+    #
     # col = findYourCluster(X, initCentroids)
     # print(col)
-
-    C = assignCluster(data, initCentroids)
-    print("C = \n", C)
-
+    #
+    # C = assignCluster(data, initCentroids)
+    # print("C = \n", C)
+    #
     # dataWithC = combineDataC(data, C)
     # print(dataWithC)
     # sns.lmplot("X1", "X2", hue="C", data=dataWithC, fit_reg=False)
     # plt.show()
+    #
+    # newCent = newCentroids(data, C)
+    # print("newCent = \n", newCent)
 
-    newCent = newCentroids(data, C)
-    print("newCent = \n", newCent)
+
+    finalC, finalCentroid, finnalCost = kMeansIter(data, 3)
+    dataWithC = combineDataC(data, finalC)
+
+    sns.lmplot("X1", "X2", hue="C", data=dataWithC, fit_reg=False)
+    plt.show()
 
 if __name__ == '__main__':
     main_func(sys.argv)
