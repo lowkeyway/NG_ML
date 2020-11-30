@@ -61,7 +61,7 @@ def kMeansIter(data, k, epoch=100, tol=0.0001):
         # fig, ax = plt.subplots(figsize=(12, 8))
         # ax.set_title("Index " + str(i))
         sns.lmplot("X1", "X2", hue="C", data=dataWithC, fit_reg=False)
-        sns.lmplot("X1", "X2", data=pd.DataFrame(centroids, columns=["X1", "X2"]), markers="X", fit_reg=False)
+        # sns.lmplot("X1", "X2", data=pd.DataFrame(centroids, columns=["X1", "X2"]), markers="X", fit_reg=False)
         ax = plt.gca()
         ax.set_title("Index " + str(i))
         # plt.title("Index " + str(i))
