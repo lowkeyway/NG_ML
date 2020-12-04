@@ -39,8 +39,23 @@ def main_func(argv):
     cov = np.cov(X.T)
     print(cov)
 
+    multi_normal = stats.multivariate_normal(mu, cov)
 
+    x, y = np.mgrid[0:30:0.01, 0:30:0.01]
+    pos = np.dstack((x, y))
 
+    fig, ax = plt.subplots(figsize=(12, 8))
+    ax.contourf(x, y, multi_normal.pdf(pos), cmap="Blues")
+
+    sns.regplot("Latency", "Throughput",
+                data = pd.DataFrame(X, columns=["Latency", "Throughput"]),
+                fit_reg=False,
+                ax = ax,
+                scatter_kws={
+                    "s":10,
+                    "alpha":0.4
+                })
+    plt.show()
 
 if __name__ == '__main__':
     main_func(sys.argv)
