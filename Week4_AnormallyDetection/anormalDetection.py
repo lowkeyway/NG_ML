@@ -9,6 +9,25 @@ import scipy.io as sio
 import seaborn as sns
 from scipy import stats
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import f1_score, classification_report
+
+def select_threshold(X, Xval, yval):
+    mu = X.mean(axis=0)
+    cov = np.cov(X.T)
+    multi_normal = stats.multivariate_normal(mu, cov)
+
+    pval = multi_normal.pdf(Xval)
+
+    epsilon = np.linspace(np.min(pval), np.max(pval), num=10000)
+
+    fs = []
+    for e in epsilon:
+        y_pred = (pval <= e).astype("int")
+        fs.append(f1_score(yval, y_pred))
+
+    argmax_fs = np.argmax(fs)
+
+    return epsilon[argmax_fs], fs[argmax_fs]
 
 def main_func(argv):
     mat = sio.loadmat("./data/ex8data1.mat")
@@ -56,6 +75,9 @@ def main_func(argv):
                     "alpha":0.4
                 })
     plt.show()
+
+    e, fs = select_threshold(X, Xval, Yval)
+    print("Best epsilon: {}\nBest F-score on validation data: {}" .format(e, fs))
 
 if __name__ == '__main__':
     main_func(sys.argv)
