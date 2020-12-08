@@ -17,21 +17,33 @@ def main_func(argv):
     # print("z = \n", z)
     # print("zCov = \n", zCov)
 
+    # X = np.array([[1, 5, 6],
+    #               [4, 3, 9],
+    #               [4, 2, 9],
+    #               [4, 7, 2]])
+    # print("X = \n", X)
+    #
+    # x = X[0:2]
+    # y = X[2:4]
+    #
+    # print("x = \n", x)
+    # print("y = \n", y)
+    #
+    # print("np.cov(X) = \n", np.cov(X))
+    #
+    # print("np.cov(x, y) = \n", np.cov(x, y))
+
+
     X = np.array([[1, 5, 6],
                   [4, 3, 9],
                   [4, 2, 9],
                   [4, 7, 2]])
     print("X = \n", X)
+    print("X.shape = \n", X.shape)
 
-    x = X[0:2]
-    y = X[2:4]
-
-    print("x = \n", x)
-    print("y = \n", y)
-
-    print("np.cov(X) = \n", np.cov(X))
-
-    print("np.cov(x, y) = \n", np.cov(x, y))
+    Y = np.moveaxis(X, 0, -1)
+    print("Y = \n", Y)
+    print("Y.shape = \n", Y.shape)
 
 
 if __name__ == '__main__':
