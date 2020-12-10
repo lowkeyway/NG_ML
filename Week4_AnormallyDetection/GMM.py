@@ -94,8 +94,8 @@ def main_func(argv):
     # plt.scatter(X[:, 0], X[:, 1], c=labels, s=50, cmap="viridis")
 
     rng = np.random.RandomState(13)
-    # X_stretched = np.dot(X, rng.random((2, 2)))
-    X_stretched = data
+    X_stretched = np.dot(X, rng.random((2, 2)))
+    # X_stretched = data
     # plt.scatter(X_stretched[:, 0], X_stretched[:, 1], s=4)
     gmm = GMM(n_components=3, covariance_type="full", random_state=42)
     plot_gmm(gmm, X_stretched)
