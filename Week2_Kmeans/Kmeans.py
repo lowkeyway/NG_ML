@@ -7,6 +7,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import scipy.io as sio
 import seaborn as sns
+from matplotlib.patches import Ellipse, Circle
 
 def combineDataC(data, C):
     dataWithC = data.copy()
@@ -29,14 +30,22 @@ def assignCluster(data, centroids):
                                arr=data.values)
 
 def cost(data, centroids, C):
+    indexList = []
+    distList = []
+
+    for index in range(centroids.shape[0]):
+        indexList.append(np.where(C==index))
+
     m = data.shape[0]
 
     expandCWithCentroids = centroids[C]
     distances = np.apply_along_axis(func1d=np.linalg.norm,
                                     axis=1,
                                     arr=data.values - expandCWithCentroids)
+    for index in range(centroids.shape[0]):
+        distList.append(distances[indexList[index]].max())
 
-    return distances.sum()/m
+    return distances.sum()/m, distList
 
 def kMeansIter(data, k, epoch=100, tol=0.0001):
     # 1. 随机选择k个点作为Centroids
@@ -50,7 +59,8 @@ def kMeansIter(data, k, epoch=100, tol=0.0001):
         # 3. 根据归类后的数据，重新计算每个类的mean值，定义为新的centroids
         centroids = newCentroids(data, C)
         # 4. 计算每个簇所有点到其中心点的平均距离记做cost
-        costProgress.append(cost(data, centroids, C))
+        u, maxDist = cost(data, centroids, C)
+        costProgress.append(u)
 
         # 5. 终止触发，缩小的比例小于一定的值就认为已经足够优秀了
         if len(costProgress) > 1:
@@ -64,6 +74,8 @@ def kMeansIter(data, k, epoch=100, tol=0.0001):
         # sns.lmplot("X1", "X2", data=pd.DataFrame(centroids, columns=["X1", "X2"]), markers="X", fit_reg=False)
         ax = plt.gca()
         ax.set_title("Index " + str(i))
+        for index in range(len(centroids)):
+            ax.add_patch(Circle((centroids[index][0], centroids[index][1]), radius=maxDist[index], fill=0, color="r"))
         # plt.title("Index " + str(i))
         plt.show()
 
