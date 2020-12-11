@@ -8,6 +8,7 @@ import pandas as pd
 import scipy.io as sio
 import seaborn as sns
 from matplotlib.patches import Ellipse, Circle
+from sklearn.datasets import make_blobs
 
 def combineDataC(data, C):
     dataWithC = data.copy()
@@ -92,6 +93,15 @@ def main_func(argv):
     data = pd.DataFrame(mat.get("X"), columns=["X1", "X2"])
     print(data.head())
 
+    X, y_true = make_blobs(n_samples=700,
+                           centers=4,
+                           cluster_std=0.5,
+                           random_state=2019)
+
+    X = X[:, ::-1]
+    rng = np.random.RandomState(13)
+    X_stretched = np.dot(X, rng.random((2, 2)))
+
     # sns.set(context="notebook", style="white")
     # sns.lmplot("X1", "X2", data=data, fit_reg=False)
     # plt.show()
@@ -123,7 +133,7 @@ def main_func(argv):
     # print("newCent = \n", newCent)
 
 
-    finalC, finalCentroid, finnalCost = kMeansIter(data, 3)
+    finalC, finalCentroid, finnalCost = kMeansIter(pd.DataFrame(X_stretched, columns=["X1", "X2"]), 3)
 
 
 if __name__ == '__main__':
