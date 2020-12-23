@@ -18,8 +18,8 @@ def predict(x, theta):
 
 def gradient(theta, X, y):
     theta = np.matrix(theta)
-    # X = np.matrix(X)
-    # y = np.matrix(y)
+    X = np.matrix(X)
+    y = np.matrix(y)
 
     parameters = int(theta.ravel().shape[1])
     grad = np.zeros(parameters)
@@ -35,8 +35,8 @@ def gradient(theta, X, y):
 def cost(theta, X, y):
     # return np.sum(-y * np.log(sigmoid(X @ theta)) - (1 - y) * np.log(1 - sigmoid(X @ theta))) / (len(X))
     theta = np.matrix(theta)
-    # X = np.matrix(X)
-    # y = np.matrix(y)
+    X = np.matrix(X)
+    y = np.matrix(y)
 
     first = np.multiply(-y, np.log(sigmoid(X * theta.T)))
     second = np.multiply((1 - y), np.log(1 - sigmoid(X * theta.T)))
