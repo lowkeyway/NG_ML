@@ -12,26 +12,14 @@ import scipy.optimize as opt
 def sigmoid(z):
     return 1 / (1 + np.exp(-z))
 
-# def gradient(theta, X, y):
-#     # return (1/len(X)) * X.T @ (sigmoid(X @ theta) - y)
-#     theta = np.matrix(theta)
-#     X = np.matrix(X)
-#     y = np.matrix(y)
-#
-#     parameters = int(theta.ravel().shape[1])
-#     grad = np.zeros(parameters)
-#
-#     error = sigmoid(X * theta.T) - y
-#     for i in range(parameters):
-#         term = np.multiply(error, X[:, i])
-#         grad[i] = np.sum(term) / len(X)
-#
-#     return grad
+def predict(x, theta):
+    prob = sigmoid(x @ theta)
+    return (prob >= 0.5).astype(int)
 
 def gradient(theta, X, y):
     theta = np.matrix(theta)
-    X = np.matrix(X)
-    y = np.matrix(y)
+    # X = np.matrix(X)
+    # y = np.matrix(y)
 
     parameters = int(theta.ravel().shape[1])
     grad = np.zeros(parameters)
@@ -45,10 +33,18 @@ def gradient(theta, X, y):
     return grad
 
 def cost(theta, X, y):
-    return np.mean(-y * np.log(sigmoid(X @ theta)) - (1 - y) * np.log(1 - sigmoid(X @ theta)))
+    # return np.sum(-y * np.log(sigmoid(X @ theta)) - (1 - y) * np.log(1 - sigmoid(X @ theta))) / (len(X))
+    theta = np.matrix(theta)
+    # X = np.matrix(X)
+    # y = np.matrix(y)
+
+    first = np.multiply(-y, np.log(sigmoid(X * theta.T)))
+    second = np.multiply((1 - y), np.log(1 - sigmoid(X * theta.T)))
+
+    return np.sum(first - second)/ (len(X))
 
 def data_plot(data):
-    sns.lmplot('exam1', 'exam2', hue='admitted', data=data,height=6, fit_reg=False, scatter_kws={"s":50})
+    sns.lmplot('exam1', 'exam2', hue='Admitted', data=data,height=6, fit_reg=False, scatter_kws={"s":50})
     plt.show()
 
 
@@ -66,7 +62,7 @@ def sigmoid_plot():
     plt.show()
 
 def main_func(argv):
-    data = pd.read_csv("ex2data1.txt", names=['exam1', 'exam2', 'admitted'])
+    data = pd.read_csv("ex2data1.txt", names=['exam1', 'exam2', 'Admitted'])
     # print(data.head())
 
     sns.set(context="notebook", style="darkgrid", palette=sns.color_palette("RdBu", 2))
@@ -77,34 +73,30 @@ def main_func(argv):
     data.insert(0, "One", 1)
     cols = data.shape[1]
 
-    # X=np.matrix(data.iloc[:, 0:cols-1].values)
-    # Y=np.matrix(data.iloc[:, cols-1:cols].values)
 
-    X = np.array(data.iloc[:, 0:cols - 1].values)
-    Y = np.array(data.iloc[:, cols - 1:cols].values)
+    X = np.array(data.iloc[:, 0:cols -1].values)
+    y = np.array(data.iloc[:, cols-1:cols].values)
 
-    # X = np.matrix(X.values)
-    # Y = np.matrix(Y.values)
-    print("X = ", X)
-    print("Y = ", Y)
+    print("X = \n", X)
+    print("Y = \n", y)
 
-    c = cost(theta, X, Y)
+    c = cost(theta, X, y)
     print("cost = \n", c)
 
-    g = gradient(theta, X, Y)
+    g = gradient(theta, X, y)
     print("gradient = \n", g)
 
-    res = opt.fmin_tnc(func=cost, x0=theta, fprime=gradient, args=(X, Y))
-    # res = opt.minimize(fun=cost, x0=theta, args=(X, Y), method="Newton-CG", jac=gradient)
+    # res = opt.fmin_tnc(func=cost, x0=theta, fprime=gradient, args=(X, y))
+    res = opt.minimize(fun=cost, x0=theta, args=(X, y), method="Newton-CG", jac=gradient)
     print("res = \n", res)
 
-    c = cost(res[0], X, Y)
-    # c = cost(res.x, X, Y)
+    # c = cost(res[0], X, y)
+    c = cost(res.x, X, y)
     print("Final cost = \n", c)
 
-
-    # plt.show()
-
+    final_theta = res.x
+    y_pred = predict(X, final_theta)
+    print(classification_report(y, y_pred))
 
 if __name__ == '__main__':
     main_func(sys.argv)
