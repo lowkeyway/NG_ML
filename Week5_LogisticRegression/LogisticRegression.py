@@ -47,6 +47,23 @@ def data_plot(data):
     sns.lmplot('exam1', 'exam2', hue='Admitted', data=data,height=6, fit_reg=False, scatter_kws={"s":50})
     plt.show()
 
+def boundary_plot(data, coef):
+    x = np.arange(130, step=0.1)
+    y = coef[0] + coef[1] * x
+
+    sns.set(context="notebook", style="ticks", font_scale=1.5)
+
+    sns.lmplot('exam1', 'exam2', hue='Admitted', data=data,
+               height=6,
+               fit_reg=False,
+               scatter_kws={"s": 25}
+               )
+
+    plt.plot(x, y, 'grey')
+    plt.xlim(0, 130)
+    plt.ylim(0, 130)
+    plt.title('Decision Boundary')
+    plt.show()
 
 
 def sigmoid_plot():
@@ -97,6 +114,13 @@ def main_func(argv):
     final_theta = res.x
     y_pred = predict(X, final_theta)
     print(classification_report(y, y_pred))
+
+    print("Final theta = ", final_theta)
+    coef = -(res.x / res.x[2])
+    print("coef = ", coef)
+
+    boundary_plot(data, coef)
+
 
 if __name__ == '__main__':
     main_func(sys.argv)
